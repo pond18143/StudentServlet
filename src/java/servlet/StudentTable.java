@@ -33,14 +33,17 @@ public class StudentTable {
         }
     }
 
-    public static void updateStudent(Student stu) {
+    public static int updateStudent(Student stu) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("StudentServletPU");
         EntityManager em = emf.createEntityManager();
-        Student fromDb = em.find(Student.class, stu.getId());
-        fromDb.setName(stu.getName());
-        fromDb.setGpa(stu.getGpa());
-        em.getTransaction().begin();
         try {
+            Student fromDb = em.find(Student.class, stu.getId());
+            if (fromDb == null) {
+                return 0;
+            }
+            fromDb.setName(stu.getName());
+            fromDb.setGpa(stu.getGpa());
+            em.getTransaction().begin();
             em.persist(fromDb);
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -49,12 +52,16 @@ public class StudentTable {
         } finally {
             em.close();
         }
+        return 1;
     }
 
-    public static Student findStudentById(Integer id) {
+    public static Student findStudentById(int id) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("StudentServletPU");
         EntityManager em = emf.createEntityManager();
         Student emp = em.find(Student.class, id);
+        if (emp == null) {
+            return null;
+        }
         em.close();
         return emp;
     }
@@ -77,12 +84,15 @@ public class StudentTable {
         return stuList;
     }
 
-    public static void removeStudent(Student stu) {
+    public static int removeStudent(Student stu) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("StudentServletPU");
         EntityManager em = emf.createEntityManager();
-        Student fromDb = em.find(Student.class, stu.getId());
-        em.getTransaction().begin();
         try {
+            Student fromDb = em.find(Student.class, stu.getId());
+            if (fromDb == null) {
+                return 0;
+            }
+            em.getTransaction().begin();
             em.remove(fromDb);
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -91,7 +101,24 @@ public class StudentTable {
         } finally {
             em.close();
         }
+        return 1;
+    }
 
+    public static int countStudent() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("StudentServletPU");
+        EntityManager em = emf.createEntityManager();
+        List<Student> stdList = null;
+        try {
+            stdList = (List<Student>) em.createNamedQuery("Student.count").getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            em.close();
+            emf.close();
+        }
+        int count = stdList.size();
+        return count;
     }
 
 }

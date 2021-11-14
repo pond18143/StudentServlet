@@ -13,14 +13,10 @@
     </head>
     <body>
         <h1>UPDATE STUDENT</h1><br>
-        <form name="updateStudent" action="update" method="POST">
+        <form name="updateStudent" action="update">
             ID : <input type="text" name="id" value="" size="20" />
+            <input type="submit" value="next" name="next" />
             <br>
-            Name : <input type="text" name="name" value="" size="50" />
-            <br>
-            GPA : <input type="text" name="gpa" value="" size="10" />
-            <br>
-            <input type="submit" value="send" name="submit" />
         </form>
         <br>
         <a href="index.html">STUDENT TITLE</a>

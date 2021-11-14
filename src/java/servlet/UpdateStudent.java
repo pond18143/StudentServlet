@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -29,12 +30,21 @@ public class UpdateStudent extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Student stuObj = new Student();
-        stuObj.setId(request.getParameter("id"));
-        stuObj.setName(request.getParameter("name"));
-        stuObj.setGpa(Float.parseFloat(request.getParameter("gpa")));
-        StudentTable.updateStudent(stuObj);
-        request.getRequestDispatcher("update.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+
+        int inpId = Integer.parseInt(request.getParameter("id"));
+        int[] studentDex = new int[StudentTable.countStudent()];
+        if (studentDex[inpId - 1] != inpId) {
+            synchronized (getServletContext()) {
+                studentDex[inpId - 1] = inpId;
+                getServletContext().setAttribute("using", studentDex);
+                Student std = StudentTable.findStudentById(inpId);
+                session.setAttribute("student", std);
+                request.getRequestDispatcher("confirmUpdate.jsp").forward(request, response);
+            }
+        } else {
+            request.getRequestDispatcher("cantUpdate.jsp").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -16,6 +16,10 @@
         <servlet-name>DeleteStudent</servlet-name>
         <servlet-class>servlet.DeleteStudent</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ConfirmUpdateStudent</servlet-name>
+        <servlet-class>servlet.ConfirmUpdateStudent</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>StudentServlet</servlet-name>
         <url-pattern>/student</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>DeleteStudent</servlet-name>
         <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmUpdateStudent</servlet-name>
+        <url-pattern>/ConfirmUpdateStudent</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

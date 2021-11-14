@@ -28,41 +28,36 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Student.findAll", query = "SELECT s FROM Student s"),
     @NamedQuery(name = "Student.findById", query = "SELECT s FROM Student s WHERE s.id = :id"),
     @NamedQuery(name = "Student.findByName", query = "SELECT s FROM Student s WHERE s.name = :name"),
-    @NamedQuery(name = "Student.findByGpa", query = "SELECT s FROM Student s WHERE s.gpa = :gpa")})
+    @NamedQuery(name = "Student.findByGpa", query = "SELECT s FROM Student s WHERE s.gpa = :gpa"),
+    @NamedQuery(name = "Student.count", query = "SELECT count(s) FROM Student s")})
+
 public class Student implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "ID")
-    private String id;
-    @Size(max = 50)
+    private Integer id;
+    @Size(max = 80)
     @Column(name = "NAME")
     private String name;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "GPA")
-    private Float gpa;
-
-    public Student(String id, String name, Float gpa) {
-        this.id = id;
-        this.name = name;
-        this.gpa = gpa;
-    }
+    private Double gpa;
 
     public Student() {
     }
 
-    public Student(String id) {
+    public Student(Integer id) {
         this.id = id;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -74,11 +69,11 @@ public class Student implements Serializable {
         this.name = name;
     }
 
-    public Float getGpa() {
+    public Double getGpa() {
         return gpa;
     }
 
-    public void setGpa(Float gpa) {
+    public void setGpa(Double gpa) {
         this.gpa = gpa;
     }
 

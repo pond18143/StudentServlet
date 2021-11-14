@@ -30,9 +30,9 @@ public class InsertStudent extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Student stuObj = new Student();
-        stuObj.setId(request.getParameter("id"));
+        stuObj.setId(Integer.parseInt(request.getParameter("id")));
         stuObj.setName(request.getParameter("name"));
-        stuObj.setGpa(Float.parseFloat(request.getParameter("gpa")));
+        stuObj.setGpa(Double.parseDouble(request.getParameter("gpa")));
         StudentTable.insertStudent(stuObj);
         request.getRequestDispatcher("insert.jsp").forward(request, response);
     }

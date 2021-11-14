@@ -11,12 +11,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author poramet
  */
-public class DeleteStudent extends HttpServlet {
+public class ConfirmUpdateStudent extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,10 +30,22 @@ public class DeleteStudent extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Student stuObj = new Student();
-        stuObj.setId(Integer.parseInt(request.getParameter("id")));
-        StudentTable.removeStudent(stuObj);
-        request.getRequestDispatcher("delete.jsp").forward(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        synchronized (getServletContext()) {
+            Student std = (Student) session.getAttribute("student");
+            int rowUpdated = 0;
+            if (request.getParameter("next") != null) {
+                std.setName(request.getParameter("name"));
+                std.setGpa(Double.parseDouble(request.getParameter("gpa")));
+                rowUpdated = StudentTable.updateStudent(std);
+                int[] studentDex = (int[]) getServletContext().getAttribute("using");
+                studentDex[(std.getId()- 1)] = 0;
+                getServletContext().setAttribute("using", studentDex);
+            }
+            request.setAttribute("rowUpdated", rowUpdated);
+            request.getRequestDispatcher("update.jsp").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
