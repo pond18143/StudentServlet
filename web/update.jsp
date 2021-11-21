@@ -13,7 +13,7 @@
     </head>
     <body>
         <h1>UPDATE STUDENT</h1><br>
-        <form name="updateStudent" action="update">
+        <form name="updateStudent" action="ConfirmUpdateStudent" method="POST">
             ID : <input type="text" name="id" value="" size="20" />
             <input type="submit" value="next" name="next" />
             <br>

@@ -7,6 +7,7 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,20 +31,16 @@ public class ConfirmUpdateStudent extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         synchronized (getServletContext()) {
             Student std = (Student) session.getAttribute("student");
-            int rowUpdated = 0;
             if (request.getParameter("next") != null) {
                 std.setName(request.getParameter("name"));
                 std.setGpa(Double.parseDouble(request.getParameter("gpa")));
-                rowUpdated = StudentTable.updateStudent(std);
-                int[] studentDex = (int[]) getServletContext().getAttribute("using");
-                studentDex[(std.getId()- 1)] = 0;
-                getServletContext().setAttribute("using", studentDex);
+                StudentTable.updateStudent(std);
+                List<Integer> using = (List<Integer>) getServletContext().getAttribute("using");
+                getServletContext().setAttribute("using", using);
             }
-            request.setAttribute("rowUpdated", rowUpdated);
             request.getRequestDispatcher("update.jsp").forward(request, response);
         }
     }

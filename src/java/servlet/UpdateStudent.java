@@ -7,6 +7,8 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,23 +33,30 @@ public class UpdateStudent extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-
         int inpId = Integer.parseInt(request.getParameter("id"));
-        int[] studentDex = new int[StudentTable.countStudent()];
-        if (studentDex[inpId - 1] != inpId) {
-            synchronized (getServletContext()) {
-                studentDex[inpId - 1] = inpId;
-                getServletContext().setAttribute("using", studentDex);
-                Student std = StudentTable.findStudentById(inpId);
+        List<Integer> using = (List<Integer>) getServletContext().getAttribute("using");
+        Student std = StudentTable.findStudentById(inpId);
+        synchronized (getServletContext()) {
+            if (std != null) {
+                List<Integer> newList = new ArrayList<Integer>();
+                newList.add(inpId);
+                getServletContext().setAttribute("using", newList);
                 session.setAttribute("student", std);
                 request.getRequestDispatcher("confirmUpdate.jsp").forward(request, response);
+                using.remove(inpId);
+            } else if (!using.contains(inpId) && std != null) {
+                using.add(inpId);
+                getServletContext().setAttribute("using", using);
+                session.setAttribute("student", std);
+                request.getRequestDispatcher("confirmUpdate.jsp").forward(request, response);
+                using.remove(inpId);
+            } else {
+                request.getRequestDispatcher("cantUpdate.jsp").forward(request, response);
             }
-        } else {
-            request.getRequestDispatcher("cantUpdate.jsp").forward(request, response);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
